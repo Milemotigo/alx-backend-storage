@@ -1,8 +1,10 @@
 Advanced sql
 
-Advanced SQL refers to the use of more complex and powerful features of the Structured Query Language (SQL) to work with databases. 
+Advanced SQL refers to the use of more complex and powerful features of the Structured
+Query Language (SQL) to work with databases. 
 While basic SQL allows you to perform common operations like querying, inserting,
-updating, and deleting data, advanced SQL techniques enable you to handle more sophisticated tasks and optimize database operations.
+updating, and deleting data, advanced SQL techniques enable you to handle more 
+sophisticated tasks and optimize database operations.
 
 1. SELECT column1, column2 FROM table_name WHERE condition;
 
@@ -56,10 +58,13 @@ end;
 XX EXAMPLE:
 select all product from the database
 
-problem with delimiter: we tried to create a procedure however mysql is stoping at the delimiter (;) which means our program ends there. 
-	for us to remove that we need to change the delimiter temporarily by adding a delimiter at the beginning.... (we need to change the default delimiter!)
+problem with delimiter: we tried to create a procedure however mysql is stoping at the delimiter (;)
+which means our program ends there. 
+for us to remove that we need to change the delimiter temporarily by adding a delimiter at the beginning.... 
+(we need to change the default delimiter!)
 
-Question: after writing our procedure mysql will no longer recongnise our semicolon as the default delimiter there we need to change it back
+Question: after writing our procedure mysql will no longer recongnise our semicolon as the default 
+delimiter there we need to change it back
 
 XX ANOTHER EXAMPLE
 
