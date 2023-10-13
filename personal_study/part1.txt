@@ -1,0 +1,225 @@
+Advanced sql
+
+Advanced SQL refers to the use of more complex and powerful features of the Structured Query Language (SQL) to work with databases. While basic SQL allows you to perform common operations like querying, inserting, updating, and deleting data, advanced SQL techniques enable you to handle more sophisticated tasks and optimize database operations.
+
+1. SELECT column1, column2 FROM table_name WHERE condition;
+
+2. INSERT INTO table_name (column1, column2) VALUES (value1, value2);
+exampe: INSERT INTO employees (employee_id, employee_name)
+	VALUES (101, 'John Smith');
+
+3. UPDATE table_name SET column1 = new_value WHERE condition;
+example:  UPDATE users
+	  SET email = 'new_email@example.com'
+	  WHERE id = 5;
+
+4. DELETE FROM table_name WHERE condition;
+
+example: DELETE FROM users;
+	:DELETE FROM users
+		WHERE id = 5;
+
+
+We am going discuss some of these advanced mysql method
+
+create a database sqldatabase
+use sqldatabase
+show tables
+create tables customers
+(cust_id int auto_increment primary key, age int, name varchar(30))
+
+
+create table users
+(id int auto_increment primary key, age int, email varchar(255) not null unique);
+show tables; 
+insert into users
+values(id, 25, "fav@gmail.com", "fav");
+
+
+
+STORED PROCEDURE: 
+
+definition:
+This is a prepared sql code that you can save for a query that you write often.
+
+for us to craete  a procedure
+
+syntax is below
+
+create procedure (procedure_name)
+begin
+	body
+end;
+
+XX EXAMPLE:
+select all product from the database
+
+problem with delimiter: we tried to create a procedure however mysql is stoping at the delimiter (;) which means our program ends there. for us to remove that we need to change the delimiter temporarily by adding a delimiter at the beginning.... (we need to change the default delimiter!)
+
+Question: after writing our procedure mysql will no longer recongnise our semicolon as the default delimiter there we need to change it back
+
+XX ANOTHER EXAMPLE
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_price_qty`()
+BEGIN
+select * from products
+where unit_price > 4
+and quantity_in_stock > 50;
+END
+
+we can drop the procedure by saying "DROP PROCEDURE 'procedure_name'"
+
+ADDING PARAMETERS TO A PROCEDURE
+
+--We can add a parameter to a procedure
+--We can use use the IN and the OUT to accept input to the procedure
+
+EXAMPLE:
+For example let say we need to get products by their id:
+create procedure getproduct_id(IN id INT)
+
+--id is a nickname for the data
+-- INT is the type
+
+
+delimiter ##
+create procedure getProduct(in id int)
+begin
+	select *
+    from products
+    where product_id = id;
+end ##
+delimiter ;
+
+call getProduct(5)
+
+now we have been able to pass argument to the procedure
+
+ONE MORE EXAMPLE
+This time we are going to pass two pieces of data
+
+create procedure prod_name_qty(in id int, in qty int)
+begin
+	select *
+	from products
+	where product_id >= id and quantity_in_stock >= qty
+end
+
+SOMEONE SHOULD TALK ABOUT THE OUT?
+
+TRIGGERS: A trigger is a user defined sql command that is invoked automatically in response to an event such as insert, delete, or update
+
+when an event happens, do something
+ex. (INSERT, UPDATE, DELETE)
+it checks for data, handles errors, auditing tables.
+
+triger_time ----> before, after
+trigger_event ---> Insert, Update, Delete
+
+
+//LETS CREATE A BEFORE TRIGGER THAT VERIFYS AGE
+
+But first we are going to create new table customers
+// CREATE TABLE CUSTOMERS
+
+delimiter //
+create trigger age_verify
+before insert on customers
+for each row
+if new.age < 0 then set new.age = 0
+end if //
+delimiter ;
+
+//insert a few values
+
+insert into customers
+values ()
+
+
+// before insert trigger
+Examle 2
+
+delimiter //
+
+create trigger updateName
+before insert on users
+for each row
+if new.name like "%e%" then
+set new.name = "favour";
+end if //
+delimiter ;
+
+insert into users
+values (id, 32, "een@gmail.com", "kens"),
+(id, 12, "Teff@gmail.com", "sina"),
+(id, 10, "Gef@gmail.com", "KEL"),
+(id, 28, "Ueffn@gmail.com", "TAM");
+
+// before insert trigger
+
+
+
+example three
+
+DELIMITER //
+CREATE TRIGGER age_verify
+BEFORE INSERT ON customers
+FOR EACH ROW
+BEGIN
+    -- Check if new.age is not an integer (not a numeric value)
+    IF new.age REGEXP '^[0-9]+$' = 0 THEN
+        -- If not an integer, set new.age to 0 (or another default value)
+        SET new.age = 0;
+    END IF;
+END;
+//
+DELIMITER ;
+
+Example 4
+
+in this example we are going to create two tables
+in this example the trigger will be fired if a certain row is empty in the table
+
+
+create table customers(
+id int auto_increment primary key,
+name varchar(30),
+email varchar(255),
+birthdate date);
+
+create table message (
+id int auto_increment,
+message_id int,
+message varchar(300) not null,
+primary key (id, message_id));
+
+why do we create a primary key at the end of the message table?
+-- This is a composite primary key, meaning that the combination of values in both columns must be unique for each row in the table.
+-- This means that the combination of values in these two columns must be unique for each row in the message table.
+
+-- next we write our after tigger command
+DELIMITER ++
+CREATE TRIGGER check_null_dob
+AFTER INSERT
+ON customers
+FOR EACH ROW
+BEGIN
+    IF NEW.birthdate IS NULL THEN
+        INSERT INTO message (message_id, message)
+        VALUES (NEW.id, CONCAT('Hi ', NEW.name, ' please update your date of birth'));
+    END IF;
+END;
+++
+DELIMITER ;
+
+
+Inserting of datas
+
+insert into customers (name, email, birthdate)
+values ("rose", "roser@email", null),
+("roland", "roland@email", '1998-11-16'),
+("alice", "alice@email", '2000-12-30'),
+("kelly", "kelly@email", null);
+
+select * from message
+
