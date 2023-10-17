@@ -1,0 +1,2 @@
+// update by name
+db.school.upate({name: "Holberton"}, {$set: {address: "972 Mission street"}})
