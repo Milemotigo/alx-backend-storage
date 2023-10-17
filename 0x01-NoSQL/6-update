@@ -1,2 +1,2 @@
 // update by name
-db.school.upateOne({name: "Holberton"}, {$set: {address: "972 Mission street"}})
+db.school.upateOne({name: "Holberton school"}, {$set: {address: "972 Mission street"}})
