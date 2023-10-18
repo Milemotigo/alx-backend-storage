@@ -31,3 +31,11 @@ class Cache:
             return fn(data)
         else:
             return data
+        
+    def get_str(self, key: str) -> str:
+        '''Returns a string'''
+        return self.get(key, fn=str)
+    
+    def get_int(self, key: int) -> int:
+        '''Returns an integer'''
+        return self.get(key, fn=int)
