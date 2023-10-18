@@ -1,38 +1,29 @@
-#!/usr/bin/env python3
-'''A module with tools for request caching and tracking.
-'''
-import redis
 import requests
-from functools import wraps
-from typing import Callable
+import redis
+import time
 
-
-redis_store = redis.Redis()
-'''The module-level Redis instance.
-'''
-
-
-def data_cacher(method: Callable) -> Callable:
-    '''Caches the output of fetched data.
-    '''
-    @wraps(method)
-    def invoker(url) -> str:
-        '''The wrapper function for caching the output.
-        '''
-        redis_store.incr(f'count:{url}')
-        result = redis_store.get(f'result:{url}')
-        if result:
-            return result.decode('utf-8')
-        result = method(url)
-        redis_store.set(f'count:{url}', 0)
-        redis_store.setex(f'result:{url}', 10, result)
-        return result
-    return invoker
-
-
-@data_cacher
 def get_page(url: str) -> str:
-    '''Returns the content of a URL after caching the request's response,
-    and tracking the request.
-    '''
-    return requests.get(url).text
+    """ Initialize a Redis connection
+    """
+    redis_client = redis.Redis()
+
+    count_key = f"count:{url}"
+    count = redis_client.get(count_key)
+
+    if count is None:
+        redis_client.setex(count_key, 10, 1)
+    else:
+        redis_client.incr(count_key)
+
+    response = requests.get(url)
+    if response.status_code == 200:
+        html_content = response.text
+    else:
+        html_content = f"Failed to fetch content from {url}"
+
+    return html_content
+
+if __name__ == "__main__":
+    url = "http://slowwly.robertomurray.co.uk/delay/5000/url/http://example.com"
+    html_content = get_page(url)
+    print(html_content)
