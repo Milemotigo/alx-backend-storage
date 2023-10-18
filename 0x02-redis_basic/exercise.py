@@ -20,9 +20,5 @@ class Cache:
         '''Create a store method that takes a data argument and returns a string
         '''
         key = str(uuid4())
-
-        if data is type(str, bytes):
-            self._redis.set(key, data)
-        if data is type(int, float):
-            self._redis.set(key, str(data))
+        self._redis.set(key, data)
         return key
