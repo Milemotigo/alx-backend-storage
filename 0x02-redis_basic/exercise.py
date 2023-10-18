@@ -12,9 +12,9 @@ class Cache:
     '''Represents an object for storing data in a Redis data storage.
     '''
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._redis = redis.Redis()
-        self._redis.flushall()
+        self._redis.flushall(True)
 
     def store(self, data: Union[str, bytes, int, float]) -> str:
         '''Create a store method that takes a data argument and returns a string
