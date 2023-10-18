@@ -9,6 +9,9 @@ from uuid import uuid4
 from typing import Union
 
 class Cache:
+    '''Represents an object for storing data in a Redis data storage.
+    '''
+
     def __init__(self):
         self._redis = redis.Redis()
         self._redis.flushall()
